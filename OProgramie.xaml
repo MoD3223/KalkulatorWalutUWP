@@ -1,0 +1,17 @@
+﻿<Page
+    x:Class="KalkulatorWalutUWP.OProgramie"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KalkulatorWalutUWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <TextBlock Text="Autor: Patryk Marchewka" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="48"/>
+        <TextBlock Text="Uczelnia: Uniwersytet Kazimierza Wielkiego" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,150,0,0" FontSize="48"/>
+        <TextBlock  Text="Przedmiot: Technologie mobilne i rozproszone na platformie .NET" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,300,0,0" FontSize="48"/>
+        <Button Content="Powrot" Margin="0,150,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="100" Width="300" FontSize="48" Click="Button_Click"/>
+    </Grid>
+</Page>

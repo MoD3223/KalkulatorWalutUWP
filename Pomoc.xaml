@@ -1,0 +1,23 @@
+﻿<Page
+    x:Class="KalkulatorWalutUWP.Pomoc"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KalkulatorWalutUWP"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <TextBlock Text="Jak korzystac z kalkulatora?" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="48"/>
+        <TextBlock Text="1. Wybierz walute poczatkowa (lewa) i docelowa (prawa) z list" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,150,0,0" FontSize="48"/>
+        <TextBlock Text="2. Wpisz w wolne miejsce liczbe jaka chcesz przekonwertowac" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,300,0,0" FontSize="48"/>
+        <TextBlock Text="3.Odczytaj wynik" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,450,0,0" FontSize="48"/>
+        <TextBlock x:Name="PomocTekst" Text="" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,600,0,0" FontSize="48"/>
+        <Button Content="Powrot" Margin="0,150,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Height="100" Width="300" FontSize="48" Click="Button_Click"/>
+        <TextBox x:Name="txtBoxSerwerNBP" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,750,0,0" FontSize="24"/>
+        <Button Content="Zmien serwer" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,900,0,0" FontSize="48" Click="Button_Click_1"/>
+        <Button Content="Sprawdz Aktualizacje" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,900,0,0" FontSize="48" Click="Button_Click_2"/>
+
+    </Grid>
+</Page>
