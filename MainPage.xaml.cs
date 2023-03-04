@@ -19,6 +19,8 @@ using System.ServiceModel.Channels;
 using Windows.Storage;
 using Windows.Media.Protection.PlayReady;
 using System.Text;
+using Windows.UI.Popups;
+using Windows.ApplicationModel.Core;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -39,14 +41,16 @@ namespace KalkulatorWalutUWP
         {
             var serwerNBP = new HttpClient();
             string dane = "";
-
+            XDocument daneKursowe = null;
+            bool udane = true;
             try
             {
                 dane = await serwerNBP.GetStringAsync(new Uri(daneNBP));
+                daneKursowe = XDocument.Parse(dane);
             }
             catch (Exception)
             {
-
+                udane = false;
             }
 
 
@@ -55,8 +59,6 @@ namespace KalkulatorWalutUWP
                 kursyAktualne.Clear();
             }
 
-            XDocument daneKursowe = XDocument.Parse(dane);
-
             StorageFolder folderLokalny = ApplicationData.Current.LocalFolder;
             StorageFile plikLokalny = await folderLokalny.TryGetItemAsync("Plik.xml") as StorageFile;
             if (plikLokalny != null)
@@ -64,23 +66,33 @@ namespace KalkulatorWalutUWP
             }
             else
             {
-                var odpowiedz = await serwerNBP.GetAsync(daneNBP);
-                var stworzPlik = await ApplicationData.Current.LocalFolder.CreateFileAsync("Plik.xml", CreationCollisionOption.ReplaceExisting);
-                var odpowiedzStream = await odpowiedz.Content.ReadAsStreamAsync();
-                using (var Stream = await stworzPlik.OpenStreamForWriteAsync())
+                try
                 {
-                    await odpowiedzStream.CopyToAsync(Stream);
+                    var odpowiedz = await serwerNBP.GetAsync(daneNBP);
+                    var stworzPlik = await ApplicationData.Current.LocalFolder.CreateFileAsync("Plik.xml", CreationCollisionOption.ReplaceExisting);
+                    var odpowiedzStream = await odpowiedz.Content.ReadAsStreamAsync();
+                    using (var Stream = await stworzPlik.OpenStreamForWriteAsync())
+                    {
+                        await odpowiedzStream.CopyToAsync(Stream);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var blad = new MessageDialog($"{ex.Message}", "Blad, nie mozna polaczyc sie z baza danych oraz nie ma zapisanego lokalnego pliku");
+                    blad.Commands.Add(new UICommand("OK"));
+                    await blad.ShowAsync();
+                    Application.Current.Exit();
                 }
             }
             XDocument DokumentXML = XDocument.Load($"{folderLokalny.Path}/Plik.xml");
 
 
 
-
-
-
-
-            DateTimeOffset dataAktualizacjiNBP = DateTimeOffset.ParseExact((string)daneKursowe.Root.Element("data_publikacji").Value, "yyyy-MM-dd", null);
+            DateTimeOffset dataAktualizacjiNBP;
+            if (udane)
+            {
+                dataAktualizacjiNBP = DateTimeOffset.ParseExact((string)daneKursowe.Root.Element("data_publikacji").Value, "yyyy-MM-dd", null);
+            }
             DateTimeOffset dataAktualizacjiPlik = DateTimeOffset.ParseExact(DokumentXML.Root.Element("data_publikacji").Value, "yyyy-MM-dd", null);
             int porownanieDat = 0;
             porownanieDat = DateTimeOffset.Compare(dataAktualizacjiPlik, dataAktualizacjiNBP);
@@ -94,6 +106,7 @@ namespace KalkulatorWalutUWP
                                      kod_waluty = item.Element("kod_waluty").Value,
                                      kurs_sredni = item.Element("kurs_sredni").Value
                                  }).ToList();
+                txtAktualizacja.Text = "Ostatnia aktualizacja: " + (string)DokumentXML.Root.Element("data_publikacji").Value;
 
             }
             else
@@ -105,7 +118,7 @@ namespace KalkulatorWalutUWP
                                      kod_waluty = item.Element("kod_waluty").Value,
                                      kurs_sredni = item.Element("kurs_sredni").Value
                                  }).ToList();
-
+                txtAktualizacja.Text = "Ostatnia aktualizacja: " + (string)daneKursowe.Root.Element("data_publikacji").Value;
                 var odpowiedz = await serwerNBP.GetAsync(daneNBP);
                 var stworzPlik = await ApplicationData.Current.LocalFolder.CreateFileAsync("Plik.xml", CreationCollisionOption.ReplaceExisting);
                 var odpowiedzStream = await odpowiedz.Content.ReadAsStreamAsync();
@@ -150,7 +163,7 @@ namespace KalkulatorWalutUWP
 
 
 
-            txtAktualizacja.Text = "Ostatnia aktualizacja: " + (string)daneKursowe.Root.Element("data_publikacji").Value;
+            
         }
 
         string daneNBP = "http://www.nbp.pl/kursy/xml/LastA.xml";
